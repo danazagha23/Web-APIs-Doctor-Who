@@ -8,11 +8,11 @@ namespace DoctorWho.Web
     {
         public MappingProfiles()
         {
-            CreateMap<Author, AuthorDto>();
-            CreateMap<Companion, CompanionDto>();
-            CreateMap<Doctor, DoctorDto>();
-            CreateMap<Enemy, EnemyDto>();
-            CreateMap<Episode, EpisodeDto>();
+            CreateMap<Author, AuthorDto>().ReverseMap();
+            CreateMap<Companion, CompanionDto>().ReverseMap();
+            CreateMap<Doctor, DoctorDto>().ReverseMap();
+            CreateMap<Enemy, EnemyDto>().ReverseMap();
+            CreateMap<Episode, EpisodeDto>().ReverseMap();
         }
     }
         

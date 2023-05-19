@@ -31,5 +31,19 @@ namespace DoctorWho.Db.Repositories
         {
             return DoctorWhoDbContext.context.Doctors.ToList();
         }
+        public Doctor UpsertDoctor(Doctor doctor)
+        {
+            var existingDoctor = DoctorWhoDbContext.context.Doctors.Find(doctor.DoctorId);
+            if(existingDoctor == null)
+            {
+                DoctorWhoDbContext.context.Add(doctor);
+            }
+            else
+            {
+                DoctorWhoDbContext.context.Entry(existingDoctor).CurrentValues.SetValues(doctor);
+            }
+            DoctorWhoDbContext.context.SaveChanges();
+            return doctor;
+        }
     }
 }
