@@ -5,6 +5,7 @@ using DoctorWho.Db.Repositories;
 using DoctorWho.Web.Dtos;
 using DoctorWho.Domain;
 using DoctorWho.Db;
+using static Azure.Core.HttpHeader;
 
 namespace DoctorWho.Web.Controllers
 {
@@ -26,6 +27,15 @@ namespace DoctorWho.Web.Controllers
             var episodesDtos = _mapper.Map<IEnumerable<EpisodeDto>>(episodes);
 
             return Ok(episodesDtos);
+        }
+
+        [HttpPost]
+        public IActionResult CreateEpisode([FromBody] EpisodeDto episodeDto)
+        {
+            var episode = _mapper.Map<Episode>(episodeDto);
+            EpisodesRepository.current.CreateEpisode(episode.SeriesNumber, episode.EpisodeNumber, episode.EpisodeType, episode.Title, episode.EpisodeDate, episode.AuthorId, episode.DoctorId, episode.Notes);
+            
+            return Ok("Episode created successfully");
         }
     }
 }
