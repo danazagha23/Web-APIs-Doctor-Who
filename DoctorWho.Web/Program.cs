@@ -10,8 +10,13 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 builder.Services.AddDbContext<DoctorWhoDbContext>();
+
 builder.Services.AddScoped<DoctorsRepository>();
 builder.Services.AddScoped<EpisodesRepository>();
+builder.Services.AddScoped<EnemiesRepository>();
+builder.Services.AddScoped<CompanionsRepository>();
+
+
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
 
