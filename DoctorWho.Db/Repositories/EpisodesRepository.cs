@@ -1,4 +1,5 @@
-﻿using DoctorWho.Domain;
+﻿using DoctorWho.Db.IRepositories;
+using DoctorWho.Domain;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,9 +8,8 @@ using System.Threading.Tasks;
 
 namespace DoctorWho.Db.Repositories
 {
-    public class EpisodesRepository
+    public class EpisodesRepository : IEpisodesRepository
     {
-        public static EpisodesRepository current { get; } = new EpisodesRepository();
         public void CreateEpisode(int seriesNumber, int episodeNumber, string episodeType, string title, DateTime episodeDate, int authorId, int doctorId, string notes)
         {
             if (title == null) throw new ArgumentNullException("Cannot create an Episode with a null Title!");
@@ -30,6 +30,28 @@ namespace DoctorWho.Db.Repositories
             if (episode == null) throw new ArgumentNullException("Cannot remove a null Episode from the Episodes table");
             DoctorWhoDbContext.context.Episodes.Remove(episode);
             DoctorWhoDbContext.context.SaveChanges();
+        }
+        public void AddEnemyToEpisode(Enemy enemy, int EpisodeId)
+        {
+            if (enemy == null) throw new ArgumentNullException("Please provide an enemy instance that is not null");
+            var episode = DoctorWhoDbContext.context.Episodes.Find(EpisodeId);
+            if (episode != null)
+            {
+                episode.EpisodeEnemies.Add(new EpisodeEnemy { EnemyId = enemy.EnemyId, EpisodeId = EpisodeId });
+                DoctorWhoDbContext.context.SaveChanges();
+            }
+            else throw new InvalidOperationException("No episodes with the provided Id exist in the database!");
+        }
+        public void AddCompanionToEpisode(Companion companion, int EpisodeId)
+        {
+            if (companion == null) throw new ArgumentNullException("Please provide a companion instance that is not null");
+            var episode = DoctorWhoDbContext.context.Episodes.Find(EpisodeId);
+            if (episode != null)
+            {
+                episode.EpisodeCompanions.Add(new EpisodeCompanion { CompanionId = companion.CompanionId, EpisodeId = EpisodeId });
+                DoctorWhoDbContext.context.SaveChanges();
+            }
+            else throw new InvalidOperationException("No episodes with the provided Id exist in the database!");
         }
     }
 }

@@ -1,4 +1,5 @@
-﻿using DoctorWho.Domain;
+﻿using DoctorWho.Db.IRepositories;
+using DoctorWho.Domain;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,9 +8,8 @@ using System.Threading.Tasks;
 
 namespace DoctorWho.Db.Repositories
 {
-    public class DoctorsRepository
+    public class DoctorsRepository : IDoctorsRepository
     {
-        public static DoctorsRepository current { get; } = new DoctorsRepository();
         public void CreateDoctor(int doctorNumber, string doctorName, DateTime birthDate, DateTime firstEpisodeDate, DateTime lastEpisodeDate)
         {
             if (doctorName == null) throw new ArgumentNullException("Cannot create an Doctor with a null DoctorName!");
