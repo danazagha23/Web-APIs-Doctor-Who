@@ -9,7 +9,9 @@ namespace DoctorWho.Db.Repositories
 {
     public class EpisodeCompanionsRepository
     {
-        public static void AddCompanionToEpisode(Companion companion, int EpisodeId)
+        public static EpisodeCompanionsRepository current = new EpisodeCompanionsRepository();
+
+        public void AddCompanionToEpisode(Companion companion, int EpisodeId)
         {
             if (companion == null) throw new ArgumentNullException("Please provide a companion instance that is not null");
             var episode = DoctorWhoDbContext.context.Episodes.Find(EpisodeId);

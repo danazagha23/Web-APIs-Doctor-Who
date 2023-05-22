@@ -11,6 +11,7 @@ builder.Services.AddSwaggerGen();
 
 builder.Services.AddDbContext<DoctorWhoDbContext>();
 builder.Services.AddScoped<DoctorsRepository>();
+builder.Services.AddScoped<EpisodesRepository>();
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
 
@@ -33,6 +34,7 @@ app.UseAuthorization();
 app.UseEndpoints(endpoints =>
 {
     endpoints.MapControllers();
-});
+}
+);
 
 app.Run();

@@ -9,7 +9,8 @@ namespace DoctorWho.Db.Repositories
 {
     public class EpisodeEnemiesRepositories
     {
-        public static void AddEnemyToEpisode(Enemy enemy, int EpisodeId)
+        public static EpisodeEnemiesRepositories current = new EpisodeEnemiesRepositories();
+        public void AddEnemyToEpisode(Enemy enemy, int EpisodeId)
         {
             if (enemy == null) throw new ArgumentNullException("Please provide an enemy instance that is not null");
             var episode = DoctorWhoDbContext.context.Episodes.Find(EpisodeId);
