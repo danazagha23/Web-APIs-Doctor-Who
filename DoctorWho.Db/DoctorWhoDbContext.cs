@@ -1,5 +1,6 @@
 ﻿using DoctorWho.Domain;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 
 namespace DoctorWho.Db
 {
@@ -22,10 +23,12 @@ namespace DoctorWho.Db
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            optionsBuilder.UseSqlServer(
-                 @"Server=DESKTOP-LQ3BMKQ;Database=DoctorWhoCore;Trusted_Connection=True;TrustServerCertificate=Yes"
-            );
-            
+            IConfigurationRoot configuration = new ConfigurationBuilder()
+                .AddJsonFile("appsettings.json")
+                .Build();
+
+            string connectionString = configuration.GetConnectionString("MyDatabaseConnection");
+            optionsBuilder.UseSqlServer(connectionString);
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
