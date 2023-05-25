@@ -9,7 +9,7 @@ namespace DoctorWho.Db.Repositories
 {
     public class EpisodesRepository
     {
-        public static void CreateEpisode(int? seriesNumber, int? episodeNumber, string episodeType, string title, DateTime? episodeDate, int authorId, int doctorId, string notes)
+        public static void CreateEpisode(int seriesNumber, int episodeNumber, string episodeType, string title, DateTime episodeDate, int authorId, int doctorId, string notes)
         {
             if (title == null) throw new ArgumentNullException("Cannot create an Episode with a null Title!");
             DoctorWhoDbContext.context.Episodes.Add(new Episode { SeriesNumber = seriesNumber, EpisodeNumber = episodeNumber, EpisodeType = episodeType, Title = title, EpisodeDate = episodeDate, AuthorId = authorId, DoctorId = doctorId, Notes = notes });
