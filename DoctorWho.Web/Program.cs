@@ -2,6 +2,7 @@ using DoctorWho.Db.Repositories;
 using DoctorWho.Db;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
+using DoctorWho.Db.IRepositories;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -12,19 +13,14 @@ builder.Services.AddSwaggerGen();
 
 builder.Services.AddDbContext<DoctorWhoDbContext>();
 
-builder.Services.AddScoped<DoctorsRepository>();
-builder.Services.AddScoped<EpisodesRepository>();
+builder.Services.AddScoped<IDoctorsRepository, DoctorsRepository>();
+builder.Services.AddScoped<IAuthorsRepository, AuthorsRepository>();
+builder.Services.AddScoped<IEpisodesRepository, EpisodesRepository>();
+
+builder.Services.AddScoped<FunctionsViewsAndStoredProceduresRepository>();
 
 
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
-
-var configuration = new ConfigurationBuilder()
-        .SetBasePath(Directory.GetCurrentDirectory())
-        .AddJsonFile("appsettings.json")
-        .Build();
-
-builder.Services.AddDbContext<DoctorWhoDbContext>(options =>
-        options.UseSqlServer(configuration.GetConnectionString("MyDatabaseConnection")));
 
 var app = builder.Build();
 

@@ -1,4 +1,5 @@
-﻿using DoctorWho.Domain;
+﻿using DoctorWho.Db.IRepositories;
+using DoctorWho.Domain;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,28 +8,39 @@ using System.Threading.Tasks;
 
 namespace DoctorWho.Db.Repositories
 {
-    public class EnemiesRepository
+    public class EnemiesRepository : IEnemiesRepository
     {
-        public static void CreateEnemy(string enemyName, string description)
+        private readonly DoctorWhoDbContext _context;
+        public EnemiesRepository(DoctorWhoDbContext context)
+        {
+            _context = context;
+        }
+        public void CreateEnemy(string enemyName, string description)
         {
             if (enemyName == null) throw new ArgumentNullException("Cannot create an Enemy with a null EnemyName!");
-            DoctorWhoDbContext.context.Enemies.Add(new Enemy { EnemyName = enemyName, Description = description });
-            DoctorWhoDbContext.context.SaveChanges();
+            _context.Enemies.Add(new Enemy { EnemyName = enemyName, Description = description });
+            _context.SaveChanges();
         }
-        public static void UpdateEnemy()
+        public void UpdateEnemy(Enemy enemy)
         {
-            DoctorWhoDbContext.context.ChangeTracker.DetectChanges();
-            DoctorWhoDbContext.context.SaveChanges();
+            var existingEnemy = _context.Authors.Find(enemy.EnemyId);
+            if (existingEnemy == null)
+            {
+                throw new InvalidOperationException("Enemy not Found");
+            }
+            _context.Entry(existingEnemy).CurrentValues.SetValues(enemy);
+
+            _context.SaveChanges();
         }
-        public static void DeleteEnemy(Enemy enemy)
+        public void DeleteEnemy(Enemy enemy)
         {
             if (enemy == null) throw new ArgumentNullException("Cannot remove a null Enemy from the Enemies table");
-            DoctorWhoDbContext.context.Enemies.Remove(enemy);
-            DoctorWhoDbContext.context.SaveChanges();
+            _context.Enemies.Remove(enemy);
+            _context.SaveChanges();
         }
-        public static Enemy GetEnemyById(int id)
+        public Enemy GetEnemyById(int id)
         {
-            var enemy = DoctorWhoDbContext.context.Enemies.Find(id);
+            var enemy = _context.Enemies.Find(id);
             if (enemy != null) return enemy;
             else throw new NullReferenceException("No enemies with the provided Id exist in the database");
         }

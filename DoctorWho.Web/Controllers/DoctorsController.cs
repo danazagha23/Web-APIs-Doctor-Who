@@ -5,6 +5,7 @@ using DoctorWho.Db.Repositories;
 using DoctorWho.Web.Dtos;
 using DoctorWho.Domain;
 using DoctorWho.Db;
+using DoctorWho.Db.IRepositories;
 
 namespace DoctorWho.Web.Controllers
 {
@@ -13,16 +14,18 @@ namespace DoctorWho.Web.Controllers
     public class DoctorsController : ControllerBase
     {
         private readonly IMapper _mapper;
+        private readonly IDoctorsRepository _doctorsRepository;
 
-        public DoctorsController(IMapper mapper)
+        public DoctorsController(IMapper mapper, IDoctorsRepository doctorsRepository)
         {
             _mapper = mapper;
+            _doctorsRepository = doctorsRepository;
         }
 
         [HttpGet]
         public IActionResult GetDoctors()
         {
-            var doctors = DoctorsRepository.current.GetAllDoctors();
+            var doctors = _doctorsRepository.GetAllDoctors();
             var doctorsDtos = _mapper.Map<IEnumerable<DoctorDto>>(doctors);
 
             return Ok(doctorsDtos);
@@ -32,7 +35,7 @@ namespace DoctorWho.Web.Controllers
         public IActionResult UpsertDoctor([FromBody] DoctorDto doctorDto)
         {
             var doctor = _mapper.Map<Doctor>(doctorDto);
-            var upsertedDoctor = DoctorsRepository.current.UpsertDoctor(doctor);
+            var upsertedDoctor = _doctorsRepository.UpsertDoctor(doctor);
             var upsertedDoctorDto = _mapper.Map<DoctorDto>(upsertedDoctor);
 
             return Ok(upsertedDoctorDto);
@@ -41,15 +44,9 @@ namespace DoctorWho.Web.Controllers
         [HttpDelete("{id}")]
         public IActionResult DeleteDoctor(int id)
         {
-            var deletedDoctor = DoctorWhoDbContext.context.Doctors.Find(id);
-            if(deletedDoctor != null)
-            {
-                DoctorsRepository.current.DeleteDoctor(deletedDoctor);
-                var deletedDoctorDto = _mapper.Map<DoctorDto>(deletedDoctor);
+            _doctorsRepository.DeleteDoctor(id);
 
-                return Ok(deletedDoctorDto);
-            }
-            return NotFound();
+            return Ok("Doctor Deleted");
         }
     }
 }

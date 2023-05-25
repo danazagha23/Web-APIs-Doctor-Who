@@ -6,6 +6,7 @@ using DoctorWho.Web.Dtos;
 using DoctorWho.Domain;
 using DoctorWho.Db;
 using static Azure.Core.HttpHeader;
+using DoctorWho.Db.IRepositories;
 
 namespace DoctorWho.Web.Controllers
 {
@@ -14,16 +15,18 @@ namespace DoctorWho.Web.Controllers
     public class EpisodesController : ControllerBase
     {
         private readonly IMapper _mapper;
+        private readonly IEpisodesRepository _episodeRepository;
 
-        public EpisodesController(IMapper mapper)
+        public EpisodesController(IMapper mapper, IEpisodesRepository episodeRepository)
         {
             _mapper = mapper;
+            _episodeRepository = episodeRepository;
         }
 
         [HttpGet]
         public IActionResult GetEpisodes()
         {
-            var episodes = EpisodesRepository.current.GetAllEpisodes();
+            var episodes = _episodeRepository.GetAllEpisodes();
             var episodesDtos = _mapper.Map<IEnumerable<EpisodeDto>>(episodes);
 
             return Ok(episodesDtos);
@@ -33,7 +36,7 @@ namespace DoctorWho.Web.Controllers
         public IActionResult CreateEpisode([FromBody] EpisodeDto episodeDto)
         {
             var episode = _mapper.Map<Episode>(episodeDto);
-            EpisodesRepository.current.CreateEpisode(episode.SeriesNumber, episode.EpisodeNumber, episode.EpisodeType, episode.Title, episode.EpisodeDate, episode.AuthorId, episode.DoctorId, episode.Notes);
+            _episodeRepository.CreateEpisode(episode.SeriesNumber, episode.EpisodeNumber, episode.EpisodeType, episode.Title, episode.EpisodeDate, episode.AuthorId, episode.DoctorId, episode.Notes);
             
             return Ok("Episode created successfully");
         }
@@ -41,9 +44,7 @@ namespace DoctorWho.Web.Controllers
         [HttpPost("{episodeId:int}/enemies/{enemyId:int}")]
         public IActionResult AddEnemyToEpisode(int enemyId, int episodeId)
         {
-            var enemy = DoctorWhoDbContext.context.Enemies.Find(enemyId);
-
-            EpisodeEnemiesRepositories.current.AddEnemyToEpisode(enemy, episodeId);
+            _episodeRepository.AddEnemyToEpisode(enemyId, episodeId);
 
             return Ok("Episode created successfully");
         }
@@ -51,9 +52,7 @@ namespace DoctorWho.Web.Controllers
         [HttpPost("{episodeId:int}/companions/{companionId:int}")]
         public IActionResult AddCompanionToEpisode(int companionId, int episodeId)
         {
-            var companion = DoctorWhoDbContext.context.Companions.Find(companionId);
-
-            EpisodeCompanionsRepository.current.AddCompanionToEpisode(companion, episodeId);
+            _episodeRepository.AddCompanionToEpisode(companionId, episodeId);
 
             return Ok("Episode created successfully");
         }
