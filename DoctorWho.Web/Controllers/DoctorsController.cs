@@ -3,6 +3,7 @@ using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using DoctorWho.Db.Repositories;
 using DoctorWho.Web.Dtos;
+using DoctorWho.Domain;
 
 namespace DoctorWho.Web.Controllers
 {
@@ -24,6 +25,16 @@ namespace DoctorWho.Web.Controllers
             var doctorsDtos = _mapper.Map<IEnumerable<DoctorDto>>(doctors);
 
             return Ok(doctorsDtos);
+        }
+
+        [HttpPost]
+        public IActionResult UpsertDoctor([FromBody] DoctorDto doctorDto)
+        {
+            var doctor = _mapper.Map<Doctor>(doctorDto);
+            var upsertedDoctor = DoctorsRepository.current.UpsertDoctor(doctor);
+            var upsertedDoctorDto = _mapper.Map<DoctorDto>(upsertedDoctor);
+
+            return Ok(upsertedDoctorDto);
         }
     }
 }
