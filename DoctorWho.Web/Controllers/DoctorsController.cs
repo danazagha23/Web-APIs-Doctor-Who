@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using DoctorWho.Db.Repositories;
 using DoctorWho.Web.Dtos;
 using DoctorWho.Domain;
+using DoctorWho.Db;
 
 namespace DoctorWho.Web.Controllers
 {
@@ -35,6 +36,20 @@ namespace DoctorWho.Web.Controllers
             var upsertedDoctorDto = _mapper.Map<DoctorDto>(upsertedDoctor);
 
             return Ok(upsertedDoctorDto);
+        }
+
+        [HttpDelete("{id}")]
+        public IActionResult DeleteDoctor(int id)
+        {
+            var deletedDoctor = DoctorWhoDbContext.context.Doctors.Find(id);
+            if(deletedDoctor != null)
+            {
+                DoctorsRepository.current.DeleteDoctor(deletedDoctor);
+                var deletedDoctorDto = _mapper.Map<DoctorDto>(deletedDoctor);
+
+                return Ok(deletedDoctorDto);
+            }
+            return NotFound();
         }
     }
 }
