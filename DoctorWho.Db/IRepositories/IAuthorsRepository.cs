@@ -10,7 +10,7 @@ namespace DoctorWho.Db.IRepositories
     public interface IAuthorsRepository
     {
         public void CreateAuthor(string authorName);
-        public void UpdateAuthor();
+        public void UpdateAuthor(int authorId, Author author);
         public void DeleteAuthor(Author author);
     }
 }

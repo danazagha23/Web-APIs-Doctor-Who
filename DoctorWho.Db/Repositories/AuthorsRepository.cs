@@ -6,27 +6,39 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using DoctorWho.Db.IRepositories;
+using System.Numerics;
 
 namespace DoctorWho.Db.Repositories
 {
     public class AuthorsRepository : IAuthorsRepository
     {
+        private readonly DoctorWhoDbContext _context;
+        public AuthorsRepository(DoctorWhoDbContext context)
+        {
+            _context = context;
+        }
         public void CreateAuthor(string authorName)
         {
             if (authorName == null) throw new ArgumentNullException("Cannot create an Author with a null AuthorName!");
-            DoctorWhoDbContext.context.Authors.Add(new Author { AuthorName = authorName });
-            DoctorWhoDbContext.context.SaveChanges();
+            _context.Authors.Add(new Author { AuthorName = authorName });
+            _context.SaveChanges();
         }
-        public void UpdateAuthor()
+        public void UpdateAuthor(int authorId, Author author)
         {
-            DoctorWhoDbContext.context.ChangeTracker.DetectChanges();
-            DoctorWhoDbContext.context.SaveChanges();
+            var existingAuthor = _context.Authors.Find(authorId);
+            if (existingAuthor == null)
+            {
+                throw new InvalidOperationException("Author not Found");
+            }
+            existingAuthor.AuthorName = author.AuthorName;
+
+            _context.SaveChanges();
         }
         public void DeleteAuthor(Author author)
         {
             if (author == null) throw new ArgumentNullException("Cannot remove a null Author from the Authors table");
-            DoctorWhoDbContext.context.Authors.Remove(author);
-            DoctorWhoDbContext.context.SaveChanges();
+            _context.Authors.Remove(author);
+            _context.SaveChanges();
         }
     }
 }

@@ -10,39 +10,51 @@ namespace DoctorWho.Db.Repositories
 {
     public class DoctorsRepository : IDoctorsRepository
     {
+        private readonly DoctorWhoDbContext _context;
+        public DoctorsRepository(DoctorWhoDbContext context)
+        {
+            _context = context;
+        }
         public void CreateDoctor(int doctorNumber, string doctorName, DateTime birthDate, DateTime firstEpisodeDate, DateTime lastEpisodeDate)
         {
             if (doctorName == null) throw new ArgumentNullException("Cannot create an Doctor with a null DoctorName!");
-            DoctorWhoDbContext.context.Doctors.Add(new Doctor { DoctorNumber = doctorNumber, DoctorName = doctorName, BirthDate = birthDate, FirstEpisodeDate = firstEpisodeDate, LastEpisodeDate = lastEpisodeDate });
-            DoctorWhoDbContext.context.SaveChanges();
+            _context.Doctors.Add(new Doctor { DoctorNumber = doctorNumber, DoctorName = doctorName, BirthDate = birthDate, FirstEpisodeDate = firstEpisodeDate, LastEpisodeDate = lastEpisodeDate });
+            _context.SaveChanges();
         }
-        public void UpdateDoctor()
+        public void UpdateDoctor(Doctor doctor)
         {
-            DoctorWhoDbContext.context.ChangeTracker.DetectChanges();
-            DoctorWhoDbContext.context.SaveChanges();
+            var existingDoctor = _context.Doctors.Find(doctor.DoctorId);
+            if(existingDoctor == null)
+            {
+                throw new InvalidOperationException("Doctor not Found");
+            }
+            _context.Entry(existingDoctor).CurrentValues.SetValues(doctor);
+
+            _context.SaveChanges();
         }
-        public void DeleteDoctor(Doctor doctor)
+        public void DeleteDoctor(int doctorId)
         {
-            if (doctor == null) throw new ArgumentNullException("Cannot remove a null Doctor from the Doctors table");
-            DoctorWhoDbContext.context.Doctors.Remove(doctor);
-            DoctorWhoDbContext.context.SaveChanges();
+            var deletedDoctor = _context.Doctors.Find(doctorId);
+            if (deletedDoctor == null) throw new ArgumentNullException("Cannot remove a null Doctor from the Doctors table");
+            _context.Doctors.Remove(deletedDoctor);
+            _context.SaveChanges();
         }
         public List<Doctor> GetAllDoctors()
         {
-            return DoctorWhoDbContext.context.Doctors.ToList();
+            return _context.Doctors.ToList();
         }
         public Doctor UpsertDoctor(Doctor doctor)
         {
-            var existingDoctor = DoctorWhoDbContext.context.Doctors.Find(doctor.DoctorId);
+            var existingDoctor = _context.Doctors.Find(doctor.DoctorId);
             if(existingDoctor == null)
             {
-                DoctorWhoDbContext.context.Add(doctor);
+                _context.Add(doctor);
             }
             else
             {
-                DoctorWhoDbContext.context.Entry(existingDoctor).CurrentValues.SetValues(doctor);
+                _context.Entry(existingDoctor).CurrentValues.SetValues(doctor);
             }
-            DoctorWhoDbContext.context.SaveChanges();
+            _context.SaveChanges();
             return doctor;
         }
     }

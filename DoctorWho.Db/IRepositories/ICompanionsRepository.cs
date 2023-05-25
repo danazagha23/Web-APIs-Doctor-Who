@@ -10,7 +10,7 @@ namespace DoctorWho.Db.IRepositories
     public interface ICompanionsRepository
     {
         public void CreateCompanion(string companionName, string whoPlayed);
-        public void UpdateCompanion();
+        public void UpdateCompanion(Companion companion);
         public void DeleteCompanion(Companion companion);
         public Companion GetCompanionById(int id);
 

@@ -44,9 +44,7 @@ namespace DoctorWho.Web.Controllers
         [HttpPost("{episodeId:int}/enemies/{enemyId:int}")]
         public IActionResult AddEnemyToEpisode(int enemyId, int episodeId)
         {
-            var enemy = DoctorWhoDbContext.context.Enemies.Find(enemyId);
-
-            _episodeRepository.AddEnemyToEpisode(enemy, episodeId);
+            _episodeRepository.AddEnemyToEpisode(enemyId, episodeId);
 
             return Ok("Episode created successfully");
         }
@@ -54,9 +52,7 @@ namespace DoctorWho.Web.Controllers
         [HttpPost("{episodeId:int}/companions/{companionId:int}")]
         public IActionResult AddCompanionToEpisode(int companionId, int episodeId)
         {
-            var companion = DoctorWhoDbContext.context.Companions.Find(companionId);
-
-            _episodeRepository.AddCompanionToEpisode(companion, episodeId);
+            _episodeRepository.AddCompanionToEpisode(companionId, episodeId);
 
             return Ok("Episode created successfully");
         }

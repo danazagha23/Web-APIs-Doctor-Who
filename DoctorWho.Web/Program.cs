@@ -17,16 +17,10 @@ builder.Services.AddScoped<IDoctorsRepository, DoctorsRepository>();
 builder.Services.AddScoped<IAuthorsRepository, AuthorsRepository>();
 builder.Services.AddScoped<IEpisodesRepository, EpisodesRepository>();
 
+builder.Services.AddScoped<FunctionsViewsAndStoredProceduresRepository>();
+
 
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
-
-var configuration = new ConfigurationBuilder()
-        .SetBasePath(Directory.GetCurrentDirectory())
-        .AddJsonFile("appsettings.json")
-        .Build();
-
-builder.Services.AddDbContext<DoctorWhoDbContext>(options =>
-        options.UseSqlServer(configuration.GetConnectionString("MyDatabaseConnection")));
 
 var app = builder.Build();
 

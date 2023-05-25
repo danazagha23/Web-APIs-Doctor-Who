@@ -10,26 +10,37 @@ namespace DoctorWho.Db.Repositories
 {
     public class EnemiesRepository : IEnemiesRepository
     {
+        private readonly DoctorWhoDbContext _context;
+        public EnemiesRepository(DoctorWhoDbContext context)
+        {
+            _context = context;
+        }
         public void CreateEnemy(string enemyName, string description)
         {
             if (enemyName == null) throw new ArgumentNullException("Cannot create an Enemy with a null EnemyName!");
-            DoctorWhoDbContext.context.Enemies.Add(new Enemy { EnemyName = enemyName, Description = description });
-            DoctorWhoDbContext.context.SaveChanges();
+            _context.Enemies.Add(new Enemy { EnemyName = enemyName, Description = description });
+            _context.SaveChanges();
         }
-        public void UpdateEnemy()
+        public void UpdateEnemy(Enemy enemy)
         {
-            DoctorWhoDbContext.context.ChangeTracker.DetectChanges();
-            DoctorWhoDbContext.context.SaveChanges();
+            var existingEnemy = _context.Authors.Find(enemy.EnemyId);
+            if (existingEnemy == null)
+            {
+                throw new InvalidOperationException("Enemy not Found");
+            }
+            _context.Entry(existingEnemy).CurrentValues.SetValues(enemy);
+
+            _context.SaveChanges();
         }
         public void DeleteEnemy(Enemy enemy)
         {
             if (enemy == null) throw new ArgumentNullException("Cannot remove a null Enemy from the Enemies table");
-            DoctorWhoDbContext.context.Enemies.Remove(enemy);
-            DoctorWhoDbContext.context.SaveChanges();
+            _context.Enemies.Remove(enemy);
+            _context.SaveChanges();
         }
         public Enemy GetEnemyById(int id)
         {
-            var enemy = DoctorWhoDbContext.context.Enemies.Find(id);
+            var enemy = _context.Enemies.Find(id);
             if (enemy != null) return enemy;
             else throw new NullReferenceException("No enemies with the provided Id exist in the database");
         }

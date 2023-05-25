@@ -44,15 +44,9 @@ namespace DoctorWho.Web.Controllers
         [HttpDelete("{id}")]
         public IActionResult DeleteDoctor(int id)
         {
-            var deletedDoctor = DoctorWhoDbContext.context.Doctors.Find(id);
-            if(deletedDoctor != null)
-            {
-                _doctorsRepository.DeleteDoctor(deletedDoctor);
-                var deletedDoctorDto = _mapper.Map<DoctorDto>(deletedDoctor);
+            _doctorsRepository.DeleteDoctor(id);
 
-                return Ok(deletedDoctorDto);
-            }
-            return NotFound();
+            return Ok("Doctor Deleted");
         }
     }
 }

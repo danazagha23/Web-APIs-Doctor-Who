@@ -2,6 +2,7 @@
 using DoctorWho.Db;
 using DoctorWho.Db.IRepositories;
 using DoctorWho.Db.Repositories;
+using DoctorWho.Domain;
 using DoctorWho.Web.Dtos;
 using Microsoft.AspNetCore.Mvc;
 
@@ -22,14 +23,9 @@ namespace DoctorWho.Web.Controllers
         [HttpPut("{authorId}")]
         public IActionResult updateAuthor(int authorId, [FromBody] AuthorDto authorDto)
         {
-            var author = DoctorWhoDbContext.context.Authors.Find(authorId);
-            if(author != null)
-            {
-                author.AuthorName = authorDto.AuthorName;
-                _authorsRepository.UpdateAuthor();
-                return Ok(author);
-            }
-            return NotFound("Author not found");
+            var author = _mapper.Map<Author>(authorDto);
+            _authorsRepository.UpdateAuthor(authorId, author);
+            return Ok(author);
         }
         
     }

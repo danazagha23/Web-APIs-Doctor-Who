@@ -9,20 +9,19 @@ namespace DoctorWho.Db
 {
     public class FunctionsViewsAndStoredProceduresRepository
     {
-        public static void Ex_Companions_Function(int EpisodeId)
+        public void Ex_Companions_Function(int EpisodeId)
         {
             using var context = new DoctorWhoDbContext();
             var companions = context.Companions.Select(c => context.Companions_Function(EpisodeId)).FirstOrDefault();
             Console.WriteLine(companions);
         }
-
-        public static void Ex_Enemies_Function(int EpisodeId)
+        public void Ex_Enemies_Function(int EpisodeId)
         {
             using var context = new DoctorWhoDbContext();
             var enemies = context.Enemies.Select(e => context.Enemies_Function(EpisodeId)).FirstOrDefault();
             Console.WriteLine(enemies);
         }
-        public static void Ex_ViewEpisodes()
+        public void Ex_ViewEpisodes()
         {
             using var context = new DoctorWhoDbContext();
             var Results = context.ViewEpisodes.ToList();
@@ -33,7 +32,7 @@ namespace DoctorWho.Db
                      result.Title, result.DoctorName, result.AuthorName, result.Companions, result.Enemies);
             }
         }
-        public static void Ex_spSummariseEpisodes()
+        public void Ex_spSummariseEpisodes()
         {
             using var context = new DoctorWhoDbContext();
 

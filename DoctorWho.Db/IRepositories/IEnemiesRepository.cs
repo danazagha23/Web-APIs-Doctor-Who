@@ -10,7 +10,7 @@ namespace DoctorWho.Db.IRepositories
     public interface IEnemiesRepository
     {
         public void CreateEnemy(string enemyName, string description);
-        public void UpdateEnemy();
+        public void UpdateEnemy(Enemy enemy);
         public void DeleteEnemy(Enemy enemy);
         public Enemy GetEnemyById(int id);
 
